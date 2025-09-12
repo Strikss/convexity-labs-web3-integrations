@@ -14,7 +14,7 @@ export async function getGasBalance(address: Address) {
 		const balanceInTokens = chainSpecificInfo.defaultFormatter(balance);
 
 		return {
-			...initialData,
+			ticker: "HYPE",
 			balance: balanceInTokens,
 		};
 	} catch (error) {

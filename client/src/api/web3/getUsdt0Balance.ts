@@ -16,7 +16,7 @@ export async function getUsdt0Balance(address: `0x${string}`) {
 		const balanceInTokens = chainSpecificInfo.defaultFormatter(balance, 6);
 
 		return {
-			...initialData,
+			ticker: "USDT0",
 			balance: balanceInTokens,
 		};
 	} catch (error) {
