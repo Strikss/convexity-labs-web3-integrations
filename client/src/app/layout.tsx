@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import { geistSans, geistMono } from "@/styles/fonts";
-import { USER_ADDRESS } from "@/constants/addresses";
+import { USER_ADDRESS } from "@/web3/addresses";
 import clsx from "clsx";
 import { PropsWithChildren } from "react";
 
 import "@/styles/tailwind.css";
+import { Header } from "./blocks/Header";
 
 export const metadata: Metadata = {
 	title: `${USER_ADDRESS} - HyperEVM Portfolio`,
@@ -22,7 +23,12 @@ function BaseLayout({ children }: PropsWithChildren) {
 }
 
 function RootLayout({ children }: PropsWithChildren) {
-	return <BaseLayout>{children}</BaseLayout>;
+	return (
+		<BaseLayout>
+			<Header />
+			<main>{children}</main>
+		</BaseLayout>
+	);
 }
 
 export default RootLayout;
