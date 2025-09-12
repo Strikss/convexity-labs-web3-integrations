@@ -1,35 +1,28 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
-import { USER_ADDRESS } from "@/constants";
+import { geistSans, geistMono } from "@/styles/fonts";
+import { USER_ADDRESS } from "@/constants/addresses";
+import clsx from "clsx";
+import { PropsWithChildren } from "react";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+import "@/styles/tailwind.css";
 
 export const metadata: Metadata = {
-  title: `${USER_ADDRESS} - HyperEVM Portfolio`,
-  description: "Track your HYPE and USDT0 balances on HyperEVM",
+	title: `${USER_ADDRESS} - HyperEVM Portfolio`,
+	description: "Track your HYPE and USDT0 balances on HyperEVM",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
-  return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
-      </body>
-    </html>
-  );
+function BaseLayout({ children }: PropsWithChildren) {
+	return (
+		<html lang="en">
+			<body className={clsx(geistSans.variable, geistMono.variable, "antialiased")}>
+				{children}
+			</body>
+		</html>
+	);
 }
+
+function RootLayout({ children }: PropsWithChildren) {
+	return <BaseLayout>{children}</BaseLayout>;
+}
+
+export default RootLayout;
