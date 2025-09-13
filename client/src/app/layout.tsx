@@ -6,6 +6,7 @@ import { PropsWithChildren } from "react";
 
 import "@/styles/tailwind.css";
 import { Header } from "./blocks/Header";
+import { QueryProvider } from "@/libs/QueryProvider";
 
 export const metadata: Metadata = {
 	title: `${USER_ADDRESS} - HyperEVM Portfolio`,
@@ -16,7 +17,7 @@ function BaseLayout({ children }: PropsWithChildren) {
 	return (
 		<html lang="en">
 			<body className={clsx(geistSans.variable, geistMono.variable, "antialiased")}>
-				{children}
+				<QueryProvider>{children}</QueryProvider>
 			</body>
 		</html>
 	);

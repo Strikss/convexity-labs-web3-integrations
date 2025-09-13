@@ -1,6 +1,8 @@
 import { Address, erc20Abi } from "viem";
 import publicClient from "../../web3";
 import { USER_ADDRESS, USTD0_ADDRESS } from "../../web3/addresses";
+import { WEB3_KEYS } from "./keys";
+import { useQuery } from "@tanstack/react-query";
 
 //Due to rpc max range limit, using dummy data for now
 
@@ -96,65 +98,71 @@ const initialData: GetUsdt0TradesResponse = {
 	},
 };
 
-export async function getUsdt0Trades(address: Address) {
-	try {
-		const currentBlock = await publicClient.getBlockNumber();
+async function getUsdt0Trades(address: Address) {
+	const currentBlock = await publicClient.getBlockNumber();
 
-		const fromBlock = currentBlock - 100n;
+	const fromBlock = currentBlock - 100n;
 
-		const logs = await publicClient.getLogs({
-			address: USTD0_ADDRESS,
-			event: erc20Abi[1],
-			args: {
-				from: address,
-			},
-			fromBlock,
-			toBlock: "latest",
-		});
+	const logs = await publicClient.getLogs({
+		address: USTD0_ADDRESS,
+		event: erc20Abi[1],
+		args: {
+			from: address,
+		},
+		fromBlock,
+		toBlock: "latest",
+	});
 
-		const receivedLogs = await publicClient.getLogs({
-			address: USTD0_ADDRESS,
-			event: erc20Abi[1],
-			args: {
-				to: address,
-			},
-			fromBlock,
-			toBlock: "latest",
-		});
+	const receivedLogs = await publicClient.getLogs({
+		address: USTD0_ADDRESS,
+		event: erc20Abi[1],
+		args: {
+			to: address,
+		},
+		fromBlock,
+		toBlock: "latest",
+	});
 
-		const allLogs = [...logs, ...receivedLogs].sort(
-			(a, b) => Number(b.blockNumber) - Number(a.blockNumber)
-		);
+	const allLogs = [...logs, ...receivedLogs].sort(
+		(a, b) => Number(b.blockNumber) - Number(a.blockNumber)
+	);
 
-		// Format the trades data
-		const trades = allLogs.map((log) => ({
-			transactionHash: log.transactionHash,
-			blockNumber: Number(log.blockNumber),
-			from: log.args.from,
-			to: log.args.to,
-			value: log.args.value?.toString() || "0",
-			valueFormatted: Number(log.args.value || 0n) / Math.pow(10, 18),
-			isOutgoing: log.args.from?.toLowerCase() === address.toLowerCase(),
-			isIncoming: log.args.to?.toLowerCase() === address.toLowerCase(),
-		}));
+	// Format the trades data
+	const trades = allLogs.map((log) => ({
+		transactionHash: log.transactionHash,
+		blockNumber: Number(log.blockNumber),
+		from: log.args.from,
+		to: log.args.to,
+		value: log.args.value?.toString() || "0",
+		valueFormatted: Number(log.args.value || 0n) / Math.pow(10, 18),
+		isOutgoing: log.args.from?.toLowerCase() === address.toLowerCase(),
+		isIncoming: log.args.to?.toLowerCase() === address.toLowerCase(),
+	}));
 
-		if (trades.length === 0) {
-			return initialData;
-		}
-
-		return {
-			trades,
-			total: allLogs.length,
-			userAddress: address,
-			tokenAddress: USTD0_ADDRESS,
-			blockRange: {
-				from: Number(fromBlock),
-				to: Number(currentBlock),
-			},
-		};
-	} catch (error) {
-		console.error("Error fetching USDT0 trades:", error);
-
+	if (trades.length === 0) {
 		return initialData;
 	}
+
+	return {
+		trades,
+		total: allLogs.length,
+		userAddress: address,
+		tokenAddress: USTD0_ADDRESS,
+		blockRange: {
+			from: Number(fromBlock),
+			to: Number(currentBlock),
+		},
+	};
 }
+
+const useGetUsdt0Trades = (propData?: Awaited<ReturnType<typeof getUsdt0Trades>>) => {
+	return useQuery({
+		queryKey: WEB3_KEYS.USDT0_TRADES,
+		queryFn: () => getUsdt0Trades(USER_ADDRESS),
+		initialData: propData || initialData,
+		refetchInterval: 10000,
+		refetchOnMount: false,
+	});
+};
+
+export { useGetUsdt0Trades, getUsdt0Trades };

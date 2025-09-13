@@ -1,11 +1,22 @@
-import { getGasBalance } from "@/api/web3/getGasBalance";
-import { getUsdt0Balance } from "@/api/web3/getUsdt0Balance";
+"use client";
+import { useGetGasBalance } from "@/api/web3/getGasBalance";
+import { useGetUsdt0Balance } from "@/api/web3/getUsdt0Balance";
 import DelayedCounter from "@/ui/DelayedCounter";
-import { USER_ADDRESS } from "@/web3/addresses";
 
-export async function Balances() {
-	const { balance: usdt0Balance, ticker: usdt0Ticker } = await getUsdt0Balance(USER_ADDRESS);
-	const { balance: hypeBalance, ticker: hypeTicker } = await getGasBalance(USER_ADDRESS);
+type BalancesProps = {
+	initialHypeBalance: {
+		balance: string;
+		ticker: string;
+	};
+	initialUsdt0Balance: {
+		balance: string;
+		ticker: string;
+	};
+};
+
+export function Balances({ initialHypeBalance, initialUsdt0Balance }: BalancesProps) {
+	const { balance: usdt0Balance, ticker: usdt0Ticker } = useGetUsdt0Balance(initialUsdt0Balance).data;
+	const { balance: hypeBalance, ticker: hypeTicker } = useGetGasBalance(initialHypeBalance).data;
 
 	const balances = [
 		{

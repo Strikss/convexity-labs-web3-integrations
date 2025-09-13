@@ -1,14 +1,19 @@
 "use client";
-import { GetUsdt0TradesResponse } from "@/api/web3/getUsdt0Trades";
+import { GetUsdt0TradesResponse, useGetUsdt0Trades } from "@/api/web3/getUsdt0Trades";
 import { useState } from "react";
 import { TradesRow } from "./TradesRow";
 
 const tableHeaders = ["Date", "Amount", "From", "To"];
 
-export function Trades({ data }: { data: GetUsdt0TradesResponse }) {
+type TradesProps = {
+	initialTradesData: GetUsdt0TradesResponse;
+};
+
+export function Trades({ initialTradesData }: TradesProps) {
+	const { trades } = useGetUsdt0Trades(initialTradesData).data;
 	const [search, setSearch] = useState("");
 
-	const tradesToRender = data.trades.filter(
+	const tradesToRender = trades.filter(
 		(trade) => trade.from?.includes(search) || trade.to?.includes(search)
 	);
 
