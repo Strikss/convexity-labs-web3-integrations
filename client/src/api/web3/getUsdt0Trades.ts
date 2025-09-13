@@ -96,7 +96,7 @@ const initialData: GetUsdt0TradesResponse = {
 	},
 };
 
-export async function getUsdt0Trades() {
+export async function getUsdt0Trades(address: Address) {
 	try {
 		const currentBlock = await publicClient.getBlockNumber();
 
@@ -106,7 +106,7 @@ export async function getUsdt0Trades() {
 			address: USTD0_ADDRESS,
 			event: erc20Abi[1],
 			args: {
-				from: USER_ADDRESS,
+				from: address,
 			},
 			fromBlock,
 			toBlock: "latest",
@@ -116,7 +116,7 @@ export async function getUsdt0Trades() {
 			address: USTD0_ADDRESS,
 			event: erc20Abi[1],
 			args: {
-				to: USER_ADDRESS,
+				to: address,
 			},
 			fromBlock,
 			toBlock: "latest",
@@ -134,8 +134,8 @@ export async function getUsdt0Trades() {
 			to: log.args.to,
 			value: log.args.value?.toString() || "0",
 			valueFormatted: Number(log.args.value || 0n) / Math.pow(10, 18),
-			isOutgoing: log.args.from?.toLowerCase() === USER_ADDRESS.toLowerCase(),
-			isIncoming: log.args.to?.toLowerCase() === USER_ADDRESS.toLowerCase(),
+			isOutgoing: log.args.from?.toLowerCase() === address.toLowerCase(),
+			isIncoming: log.args.to?.toLowerCase() === address.toLowerCase(),
 		}));
 
 		if (trades.length === 0) {
@@ -145,7 +145,7 @@ export async function getUsdt0Trades() {
 		return {
 			trades,
 			total: allLogs.length,
-			userAddress: USER_ADDRESS,
+			userAddress: address,
 			tokenAddress: USTD0_ADDRESS,
 			blockRange: {
 				from: Number(fromBlock),
