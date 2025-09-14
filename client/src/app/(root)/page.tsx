@@ -8,9 +8,11 @@ import { getUsdt0Balance } from "@/api/web3/getUsdt0Balance";
 export const revalidate = 0;
 
 export default async function Home() {
-	const tradesData = await getUsdt0Trades(USER_ADDRESS);
-	const hypeBalance = await getGasBalance(USER_ADDRESS);
-	const usdt0Balance = await getUsdt0Balance(USER_ADDRESS);
+	const [tradesData, hypeBalance, usdt0Balance] = await Promise.all([
+		getUsdt0Trades(USER_ADDRESS),
+		getGasBalance(USER_ADDRESS),
+		getUsdt0Balance(USER_ADDRESS),
+	]);
 
 	return (
 		<section className="flex flex-col gap-4">

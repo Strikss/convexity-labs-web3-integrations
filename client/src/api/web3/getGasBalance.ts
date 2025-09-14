@@ -4,7 +4,6 @@ import publicClient from "../../web3";
 import { Address } from "viem";
 import { WEB3_KEYS } from "./keys";
 import { useQuery } from "@tanstack/react-query";
-import { USER_ADDRESS } from "@/web3/addresses";
 
 const initialData = { balance: "0", ticker: "HYPE" };
 
@@ -21,13 +20,13 @@ async function getGasBalance(address: Address) {
 	};
 }
 
-const useGetGasBalance = (propData?: Awaited<ReturnType<typeof getGasBalance>>) => {
+const useGetGasBalance = (address: Address, propData?: Awaited<ReturnType<typeof getGasBalance>>) => {
 	return useQuery({
-		queryKey: WEB3_KEYS.HYPER_BALANCE,
-		queryFn: () => getGasBalance(USER_ADDRESS),
+		queryKey: [...WEB3_KEYS.HYPER_BALANCE, address],
+		queryFn: () => getGasBalance(address),
 		initialData: propData || initialData,
 		refetchInterval: 10000,
-		refetchOnMount: false,
+		refetchOnMount: !propData,
 	});
 };
 

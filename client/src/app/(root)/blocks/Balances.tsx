@@ -2,6 +2,7 @@
 import { useGetGasBalance } from "@/api/web3/getGasBalance";
 import { useGetUsdt0Balance } from "@/api/web3/getUsdt0Balance";
 import DelayedCounter from "@/ui/DelayedCounter";
+import { USER_ADDRESS } from "@/web3/addresses";
 
 type BalancesProps = {
 	initialHypeBalance: {
@@ -15,8 +16,14 @@ type BalancesProps = {
 };
 
 export function Balances({ initialHypeBalance, initialUsdt0Balance }: BalancesProps) {
-	const { balance: usdt0Balance, ticker: usdt0Ticker } = useGetUsdt0Balance(initialUsdt0Balance).data;
-	const { balance: hypeBalance, ticker: hypeTicker } = useGetGasBalance(initialHypeBalance).data;
+	const { balance: usdt0Balance, ticker: usdt0Ticker } = useGetUsdt0Balance(
+		USER_ADDRESS,
+		initialUsdt0Balance
+	).data;
+	const { balance: hypeBalance, ticker: hypeTicker } = useGetGasBalance(
+		USER_ADDRESS,
+		initialHypeBalance
+	).data;
 
 	const balances = [
 		{

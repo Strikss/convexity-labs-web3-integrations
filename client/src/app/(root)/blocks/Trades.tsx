@@ -2,6 +2,7 @@
 import { GetUsdt0TradesResponse, useGetUsdt0Trades } from "@/api/web3/getUsdt0Trades";
 import { useState } from "react";
 import { TradesRow } from "./TradesRow";
+import { USER_ADDRESS } from "@/web3/addresses";
 
 const tableHeaders = ["Date", "Amount", "From", "To"];
 
@@ -10,7 +11,7 @@ type TradesProps = {
 };
 
 export function Trades({ initialTradesData }: TradesProps) {
-	const { trades } = useGetUsdt0Trades(initialTradesData).data;
+	const { trades } = useGetUsdt0Trades(USER_ADDRESS, initialTradesData).data;
 	const [search, setSearch] = useState("");
 
 	const tradesToRender = trades.filter(

@@ -155,13 +155,13 @@ async function getUsdt0Trades(address: Address) {
 	};
 }
 
-const useGetUsdt0Trades = (propData?: Awaited<ReturnType<typeof getUsdt0Trades>>) => {
+const useGetUsdt0Trades = (address: Address, propData?: Awaited<ReturnType<typeof getUsdt0Trades>>) => {
 	return useQuery({
-		queryKey: WEB3_KEYS.USDT0_TRADES,
-		queryFn: () => getUsdt0Trades(USER_ADDRESS),
+		queryKey: [...WEB3_KEYS.USDT0_TRADES, address],
+		queryFn: () => getUsdt0Trades(address),
 		initialData: propData || initialData,
 		refetchInterval: 10000,
-		refetchOnMount: false,
+		refetchOnMount: !propData,
 	});
 };
 
