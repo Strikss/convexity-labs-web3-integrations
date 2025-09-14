@@ -3,6 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { entities } from './entities';
+import { Transfer } from './entities/transfer.entity';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { entities } from './entities';
       // logging: ['query'],
       synchronize: true,
     }),
+    TypeOrmModule.forFeature([Transfer]),
   ],
   controllers: [AppController],
   providers: [AppService],
